@@ -1,0 +1,38 @@
+<!-- api/templates/index.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Medical AI Chatbot</title>
+    {% if theme == 'day' %}
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style_day.css') }}">
+    {% else %}
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style_night.css') }}">
+    {% endif %}
+</head>
+<body>
+    <h1>Medical AI Chatbot</h1>
+    <form id="diagnosis-form">
+        <textarea name="user_input" id="user_input" rows="4" cols="50" placeholder="Enter your symptoms..."></textarea><br>
+        <button type="submit">Diagnose</button>
+    </form>
+    <div id="response"></div>
+    
+    <script>
+    document.getElementById('diagnosis-form').addEventListener('submit', function(e) {
+        e.preventDefault();
+        var user_input = document.getElementById('user_input').value;
+        fetch("/diagnose", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/x-www-form-urlencoded"
+            },
+            body: "user_input=" + encodeURIComponent(user_input)
+        })
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById('response').innerText = data.response;
+        });
+    });
+    </script>
+</body>
+</html>
